@@ -1,61 +1,138 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🔗 Laravel URL Shortener API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a REST API for shortening URLs, built with Laravel. It includes user authentication, URL management, and bonus features like visit tracking.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✅ Features Checklist
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+This project successfully implements the following features:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🔐 Core Features
+- ✅ **User Registration** → `POST /api/register`
+- ✅ **User Login** → `POST /api/login`
+- ✅ **URL Shortening** → `POST /api/shorten` (Authenticated)
+- ✅ **List User URLs** → `GET /api/urls` (Authenticated)
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 📦 Installation Instructions
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Follow these steps to set up this project locally:
 
-## Laravel Sponsors
+### 1. Clone the repository
+```bash
+git clone https://github.com/Omarabdullah99/assignment-4-shortURL
+cd assignment-4-shortURL
+2. Install PHP dependencies
+composer install
+3. Create environment file
+cp .env.example .env
+4. Generate app key
+php artisan key:generate
+5. Configure database
+DB_DATABASE=your_db_name
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+6. Run migrations
+php artisan migrate
+7. Start local server
+php artisan serve
+App will run at: http://127.0.0.1:8000
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+📖 API Documentation
+All API endpoints expect and return JSON.
 
-### Premium Partners
+Header required for all requests:
+Accept: application/json
+1️⃣ Register New User
+Endpoint: POST /api/register
+Authentication: Public
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+✅ Request Body
+{
+  "name": "Person 2",
+  "email": "person2@gmail.com",
+  "password": "12345678"
+}
+📥 Success Response (201 Created)
+{
+  "message": "User create successfully",
+  "user": {
+    "name": "Person 2",
+    "email": "person2@gmail.com",
+    "updated_at": "2025-09-20T06:13:15.000000Z",
+    "created_at": "2025-09-20T06:13:15.000000Z",
+    "id": 3
+  }
+}
+2️⃣ User Login
+Endpoint: POST /api/login
+Authentication: Public
 
-## Contributing
+✅ Request Body
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+{
+  "email": "person2@gmail.com",
+  "password": "12345678"
+}
+📥 Success Response (200 OK)
 
-## Code of Conduct
+{
+  "token": "4|pFt52OSmdhLdJPLe9zWlJNCwkIqn2gFXyxwQJ2Puf46ce4a8",
+  "status": true,
+  "user": {
+    "id": 3,
+    "name": "Person 2",
+    "email": "person2@gmail.com",
+    "created_at": "2025-09-20T06:13:15.000000Z",
+    "updated_at": "2025-09-20T06:13:15.000000Z"
+  }
+}
+Use the token from this response as a Bearer Token in the Authorization header for all authenticated routes.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3️⃣ Shorten a URL
+Endpoint: POST /api/shorten
+Authentication: Required (Bearer Token)
 
-## Security Vulnerabilities
+✅ Headers
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Authorization: Bearer <your_token>
+Accept: application/json
+✅ Request Body
 
-## License
+{
+  "original_url": "https://www.person2another.com"
+}
+📥 Success Response
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+{
+  "original_url": "https://www.person2another.com",
+  "short_url": "http://127.0.0.1:8000/Zrcj39"
+}
+4️⃣ Get All URLs for Authenticated User
+Endpoint: GET /api/urls
+Authentication: Required (Bearer Token)
+
+📥 Success Response
+[
+  {
+    "id": 3,
+    "user_id": 3,
+    "original_url": "https://www.person2.com",
+    "short_code": "J0s5S8",
+    "visits": 0,
+    "created_at": "2025-09-20T06:14:17.000000Z",
+    "updated_at": "2025-09-20T06:14:17.000000Z"
+  },
+  {
+    "id": 4,
+    "user_id": 3,
+    "original_url": "https://www.person2another.com",
+    "short_code": "Zrcj39",
+    "visits": 0,
+    "created_at": "2025-09-20T06:14:25.000000Z",
+    "updated_at": "2025-09-20T06:14:25.000000Z"
+  }
+]
